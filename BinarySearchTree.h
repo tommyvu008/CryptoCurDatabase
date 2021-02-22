@@ -1,13 +1,12 @@
 // Binary Search Tree ADT
 // Created by A. Student
-// Modified by: Tommy Vu
+// Modified by: Tommy Vu, Steven Vu, Meng Leon Un
  
 #ifndef _BINARY_SEARCH_TREE
 #define _BINARY_SEARCH_TREE
 
 #include "BinaryTree.h"
 #include "BinaryNode.h"
-#include "Crypto.h"
 
 
 template<class ItemType>
@@ -18,7 +17,7 @@ private:
 	BinaryNode<ItemType>* _insert(BinaryNode<ItemType>* nodePtr, BinaryNode<ItemType>* newNode);
    
 	// internal remove node: locate and delete target node under nodePtr subtree
-	BinaryNode<ItemType>* _remove(BinaryNode<ItemType>* nodePtr, const ItemType target, bool & success);
+	BinaryNode<ItemType>* _remove(BinaryNode<ItemType>* nodePtr, ItemType target, bool & success);
    
 	// delete target node from tree, called by internal remove node
 	BinaryNode<ItemType>* deleteNode(BinaryNode<ItemType>* targetNodePtr);
@@ -42,6 +41,8 @@ public:
 	bool remove(const ItemType & anEntry);
 	// find a target node
 	bool getEntry(const ItemType & target, ItemType & returnedItem) const;
+	// find all entry with the target node
+	bool getAllEntry(const ItemType & target, void visit(ItemType& )) const;
 	// find leftmost node
 	bool leftNode(ItemType & cool) const;
 	// find rightmost node
@@ -88,6 +89,28 @@ bool BinarySearchTree<ItemType>::getEntry(const ItemType& anEntry, ItemType & re
 	}
     return checker;
 }  
+
+template<class ItemType>
+bool BinarySearchTree<ItemType>::getAllEntry(const ItemType& target, void visit(ItemType&)) const
+{
+	// find the node
+	BinaryNode<ItemType>* entry = findNode(this->rootPtr, target);
+	// if node is found
+	if (entry)
+	{
+		do {
+			// visit the node
+			ItemType tmp = entry->getItem();
+			visit(tmp);
+			// find next node with the same key
+			// since the, by default, we insert the node with the same key to the right
+			// so all the node with the same key will be in the right-subtree of the node
+			entry = findNode(entry->getRightPtr(), target);
+		} while (entry);
+		return true;
+	}
+	return false;
+}
 
 //Finding left most node within a tree
 template<class ItemType>
@@ -221,24 +244,34 @@ BinaryNode<ItemType>* BinarySearchTree<ItemType>::findRightNode(BinaryNode<ItemT
 //Implementation of the remove operation
 template<class ItemType>
 BinaryNode<ItemType>* BinarySearchTree<ItemType>::_remove(BinaryNode<ItemType>* nodePtr,
-                                                          const ItemType target,
-                                                          bool & success)
+	ItemType target,
+	bool& success)
 
 {
-	if (nodePtr == 0)                   
+	if (nodePtr == 0)
 	{
 		success = false;
 		return 0;
 	}
-	if (nodePtr->getItem() > target)		 
+
+	if (nodePtr->getItem() > target)
 		nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), target, success));
-	else if (nodePtr->getItem() < target)	 
+	else if (nodePtr->getItem() < target)
 		nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), target, success));
-	else		
+	else
 	{
-		nodePtr = deleteNode(nodePtr);
-		success = true;
-	}      
+		// For non-primary tree deletion
+		// Check if the item's primary key is the same
+		if (nodePtr->getItem().pk == target.pk)
+		{
+			nodePtr = deleteNode(nodePtr);
+			success = true;
+		}
+		else
+		{
+			nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), target, success));
+		}
+	}
 	return nodePtr;   
 }  
 //Implementation of the delete operation

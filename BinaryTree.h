@@ -1,6 +1,6 @@
 // Binary tree abstract base class
 // Created by A. Student
-// Modified by: Tommy Vu
+// Modified by: Tommy Vu, Steven Vu
 
 #ifndef _BINARY_TREE
 #define _BINARY_TREE
@@ -30,11 +30,14 @@ public:
 	void clear() { destroyTree(rootPtr); rootPtr = 0; count = 0; }
 	void preOrder(void visit(ItemType&)) const { _preorder(visit, rootPtr); }
 	void inOrder(void visit(ItemType&)) const { _inorder(visit, rootPtr); }
+	void inOrderOutput(void visit(ItemType&, ofstream&), ofstream& outFile) const { _inorder(visit, rootPtr, outFile); }
 	void postOrder(void visit(ItemType&)) const { _postorder(visit, rootPtr); }
 	void breadthTrav(void visit(ItemType&)) const { _breadthTrav(visit, rootPtr); }
 	void iterativePreOrder(void visit(ItemType&)) const { _iterativePreOrder(visit, rootPtr); }
+	void iterativeInOrder(void visit(ItemType&)) const { _iterativeInOrder(visit, rootPtr); }
 	void iterativePostOrder(void visit(ItemType&)) const { _iterativePostOrder(visit, rootPtr); }
 	void print(void visit(ItemType&)) const { _print(visit, rootPtr, 0); }
+	void indentedTraversal(void visitIndented(int, ItemType&)) const { _indentedTraversal(0, visitIndented, rootPtr); }
 
 	// abstract functions to be implemented by derived class
 	virtual bool insert(const ItemType& newData) = 0;
@@ -48,11 +51,13 @@ private:
 	// internal traverse
 	void _preorder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
 	void _inorder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
+	void _inorder(void visit(ItemType&, ofstream&), BinaryNode<ItemType>* nodePtr, ofstream& outFile) const;
 	void _postorder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
 	void _breadthTrav(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
 	void _iterativePreOrder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
-	void _print(void visit(ItemType&), BinaryNode<ItemType>* nodePtr, int level) const;
+	void _iterativeInOrder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
 	void _iterativePostOrder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const;
+	void _indentedTraversal(int level, void visit(int, ItemType&), BinaryNode<ItemType>* nodePtr) const;
 };
 
 //Destroy the entire tree
@@ -93,6 +98,20 @@ void BinaryTree<ItemType>::_inorder(void visit(ItemType&), BinaryNode<ItemType>*
 		ItemType item = nodePtr->getItem();
 		visit(item);
 		_inorder(visit, nodePtr->getRightPtr());
+	}
+}
+
+//Inorder Traversal For Output
+template<class ItemType>
+void BinaryTree<ItemType>::_inorder(void visit(ItemType&, ofstream&), BinaryNode<ItemType>* nodePtr, ofstream& outFile) const
+{
+	if (nodePtr != 0)
+	{
+		ItemType dummy;
+		_inorder(visit, nodePtr->getLeftPtr(), outFile);
+		dummy = nodePtr->getItem();
+		visit(dummy, outFile);
+		_inorder(visit, nodePtr->getRightPtr(), outFile);
 	}
 }
 
@@ -140,60 +159,38 @@ void BinaryTree<ItemType>::_breadthTrav(void visit(ItemType&), BinaryNode<ItemTy
 
 }
 
-
-
-// Iterative PostOrder
 template<class ItemType>
 void BinaryTree<ItemType>::_iterativePostOrder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const
 {
-
-	if (nodePtr == 0)
+	if (nodePtr != 0)
 	{
-		return;
-	}
-		Stack<BinaryNode<ItemType>*> stack;
-		BinaryNode<ItemType>* nimrod;
-		BinaryNode<ItemType>* item3;
-		ItemType item = nodePtr->getItem();
+		Stack<BinaryNode<ItemType>*> s, output;
+		BinaryNode<ItemType>* poppedNode;
+		ItemType item;
+		s.push(nodePtr);
 
-		do
+		while (!s.isEmpty())
 		{
-			while (nodePtr != 0)
-			{
-				if (nodePtr->getRightPtr() != 0)
-				{
-					stack.push(nodePtr->getRightPtr());
-				}
-				stack.push(nodePtr);
-				nodePtr = nodePtr->getLeftPtr();
-			}
+			s.pop(poppedNode);
+			output.push(poppedNode);
 
-			stack.pop(nodePtr);
-			if (stack.isEmpty() == false)
+			if (poppedNode->getLeftPtr())
 			{
-				stack.pop(item3);
-				stack.push(item3);
+				s.push(poppedNode->getLeftPtr());
 			}
-			else
+			if (poppedNode->getRightPtr())
 			{
-				item3 = 0;
+				s.push(poppedNode->getRightPtr());
 			}
-			nimrod = nodePtr->getRightPtr();
+		}
 
-			if (nodePtr->getRightPtr() != 0 && item3 == nimrod)
-			{
-				
-				stack.pop(item3);
-				stack.push(nodePtr);
-				nodePtr = nodePtr->getRightPtr();
-			}
-			else
-			{
-				item = nodePtr->getItem();
-				visit(item);
-				nodePtr = 0;
-			}
-		} while (stack.isEmpty() == false);
+		while (!output.isEmpty())
+		{
+			output.pop(poppedNode);
+			item = poppedNode->getItem();
+			visit(item);
+		}
+	}
 }
 
 // Iterative PreOrder
@@ -228,28 +225,43 @@ void BinaryTree<ItemType>::_iterativePreOrder(void visit(ItemType&), BinaryNode<
 }
 
 
-//Prints list in PreOrder (Root, Right, Left)
-// Uses and additional parameter, int level, to display the correct level as it's printing.
 template<class ItemType>
-void BinaryTree<ItemType>::_print(void visit(ItemType&), BinaryNode<ItemType>* nodePtr, int level) const
+void BinaryTree<ItemType>::_iterativeInOrder(void visit(ItemType&), BinaryNode<ItemType>* nodePtr) const
 {
 	if (nodePtr != 0)
 	{
-		level++;
-		ItemType item = nodePtr->getItem();
-		cout << setw(8 * (level)) << "Level " << level << ": ";
-		visit(item);
-		_print(visit, nodePtr->getRightPtr(), level);
-		_print(visit, nodePtr->getLeftPtr(), level);
+		Stack<BinaryNode<ItemType>*> s;
+		BinaryNode<ItemType>* curr = nodePtr;
+		ItemType item;
+		while (!s.isEmpty() || curr)
+		{
+			if (curr != 0)
+			{
+				s.push(curr);
+				curr = curr->getLeftPtr();
+			}
+			else
+			{
+				s.pop(curr);
+				visit(item = curr->getItem());
+				curr = curr->getRightPtr();
+			}
+		}
 	}
-	else
+}
+
+template<class ItemType>
+void BinaryTree<ItemType>::_indentedTraversal(int level, void visit(int, ItemType&), BinaryNode<ItemType>* nodePtr) const
+{
+	if (nodePtr != 0)
 	{
-		level--;
+		ItemType item = nodePtr->getItem();
+		visit(level, item);
+		_indentedTraversal(level + 1, visit, nodePtr->getRightPtr());
+		_indentedTraversal(level + 1, visit, nodePtr->getLeftPtr());
 	}
 }
 
 
 
-
 #endif
-

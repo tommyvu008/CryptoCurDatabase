@@ -1,6 +1,6 @@
 // Specification file for the Cryptocurrency class
 // Written By: A. Student
-// Changed By: Tommy Vu
+// Changed By: Tommy Vu, Meng Leong Un
 // IDE: Visual Studio
 
 
@@ -20,20 +20,20 @@ class Cryptocurrency
 private:
 	string coinName;
 	string alg;
-	int supply;
+	long long supply;
 	int dateFound;
 	double price;
 	string founder;
 
 public:
 	Cryptocurrency();
-	Cryptocurrency(string n, string a, int s, int d, double p, string f);
+	Cryptocurrency(string n, string a, long long s, int d, double p, string f);
 	~Cryptocurrency();
 
 	// Setters
 	void setName(string n) { coinName = n; }
 	void setAlg(string a) { alg = a; }
-	void setSupply(int s) { supply = s; }
+	void setSupply(long long s) { supply = s; }
 	void setDate(int d) { dateFound = d; }
 	void setPrice(double p) { price = p; }
 	void setFounder(string f) { founder = f; }
@@ -41,7 +41,7 @@ public:
 	// Getters
 	string getName() const { return coinName; }
 	string getAlg() const { return alg; }
-	int getSupply() const { return supply; }
+	long long getSupply() const { return supply; }
 	int getDate() const { return dateFound; }
 	double getPrice() const { return price; }
 	string getFounder() const { return founder; }
@@ -58,4 +58,39 @@ public:
 	void display();
 };
 
+struct CryptocurrencyPtr{
+	Cryptocurrency* crypto;
+	string key;
+	string pk;
+
+	CryptocurrencyPtr() { crypto = nullptr; key = ""; pk = ""; };
+	CryptocurrencyPtr(Cryptocurrency* crypto_, string key_) { crypto = crypto_; key = key_; pk = ""; };
+	CryptocurrencyPtr(Cryptocurrency* crypto_, string key_, string pk_) { crypto = crypto_; key = key_; pk = pk_; };
+
+	string getKey() { return key; };
+	string getPK() { return pk; };
+	Cryptocurrency* getCrypto() { return crypto; };
+	void setKey(string k) { key = k; };
+
+	bool operator < (const CryptocurrencyPtr& second) const
+	{
+		return (this->key < second.key);
+	}
+
+	bool operator > (const CryptocurrencyPtr& second) const
+	{
+		return (this->key > second.key);
+	}
+
+	bool operator == (const CryptocurrencyPtr& second) const
+	{
+		return (this->key == second.key);
+	}
+
+	bool operator != (const CryptocurrencyPtr& second) const
+	{
+		return (this->key != second.key);
+	}
+
+};
 #endif
