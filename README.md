@@ -1,4 +1,4 @@
-# readMe
+# Cryptocurrency Database
 
 A program that reads in Cryptocurrency text Data into various data strucures.
 Implements the stacks, queues, recursion, binary search tree, and hashed tables.
