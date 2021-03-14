@@ -1,8 +1,3 @@
-// Implementation file for the City class
-// Written By: A. Student
-// Changed By: Tommy Vu
-// IDE: Visual Studios
-
 #include <iostream>
 #include "Crypto.h"
 #include <iomanip>
