@@ -1,9 +1,5 @@
-
-// Hash table template 
-// Collision resolution method: linked list
+ // Collision resolution method: linked list
 // Rehash when exceed the threshold
-// Created by Michael Wong
-// Modified by Meng Leong Un
 
 #ifndef _HASH_TABLE
 #define _HASH_TABLE
