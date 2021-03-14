@@ -1,6 +1,3 @@
-/**~*~*
-   Queue template
-*~**/
 #ifndef DYNAMICQUEUE_H
 #define DYNAMICQUEUE_H
 #include <iostream>
