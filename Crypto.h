@@ -1,8 +1,4 @@
 // Specification file for the Cryptocurrency class
-// Written By: A. Student
-// Changed By: Tommy Vu, Meng Leong Un
-// IDE: Visual Studio
-
 
 #ifndef CRYPTOCURRENCY_H
 #define CRYPTOCURRENCY_H
