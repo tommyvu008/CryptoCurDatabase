@@ -1,7 +1,4 @@
 // Specification file for the ListNode class
-// Written By: Meng Leong Un
-// Changed By: Meng Leong Un
-// IDE: Visual Studio
 
 #include <iostream>
 #ifndef LISTNODE_H
