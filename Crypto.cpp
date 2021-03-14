@@ -103,7 +103,7 @@ Cryptocurrency::~Cryptocurrency()
 }
 
 //***********************************************************
-// Displays the values of the City object member variables
+// Displays the values of the bject member variables
 //***********************************************************
 void Cryptocurrency::display()
 {
