@@ -1,5 +1,4 @@
 // Node for a binary tree
-// Created by A. Student
 // Modified by: Tommy Vu
  
 #ifndef _BINARY_NODE
