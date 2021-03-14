@@ -1,6 +1,4 @@
 // Binary Search Tree ADT
-// Created by A. Student
-// Modified by: Tommy Vu, Steven Vu, Meng Leon Un
  
 #ifndef _BINARY_SEARCH_TREE
 #define _BINARY_SEARCH_TREE
