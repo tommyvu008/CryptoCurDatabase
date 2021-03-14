@@ -1,5 +1,4 @@
 // main test driver for CryptoCurrency Database
-// Modified by: Tommy Vu, Meng Leong Un, Michael Wong, Steven Vu
 
 #include "BinarySearchTree.h" 
 #include "Crypto.h"
