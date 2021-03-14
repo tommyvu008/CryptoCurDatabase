@@ -1,6 +1,3 @@
-/**~*~*
-   Stack template
-*~**/
 #ifndef STACK_ADT_H
 #define STACK_ADT_H
 #include <iostream>
