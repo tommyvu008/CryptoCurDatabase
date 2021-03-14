@@ -1,7 +1,4 @@
 // Specification file for the LinkedList class
-// Written By: A. Student
-// Changed By: Meng Leong Un
-// IDE: Visual Studio
 
 #ifndef D_LIST_H
 #define D_LIST_H
